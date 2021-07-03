@@ -16,8 +16,6 @@ app.set('views', path.join(__dirname, 'views'));
 // ejs 레이아웃 사용하기
 // app.set(expressLayouts);
 
-// 시퀄라이즈 모듈 가져오기
-
 // 미들웨어 사용
 // static 폴더 경로 설정 /public으로
 app.use(express.static(path.join(__dirname, 'public')));
@@ -27,6 +25,7 @@ app.use(express.urlencoded({extended:false})); // url을 해석- 내장모듈 �
 // morgan - 로그
 app.use(morgan('dev'));
 
+// 시퀄라이즈 모듈 가져오기
 const sequelize = require('./models/index.js').sequelize; // db안에 있는 시퀄라이저객체
 sequelize.sync().then(()=>{
   console.log('============데이터베이스 연결 성공=============');
