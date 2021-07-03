@@ -1,0 +1,28 @@
+{
+  "name": "my-bird",
+  "version": "1.0.0",
+  "description": "> Node.js교과서 책의 Node-bird를 참고하여 만든 기본 **CRUD** 앱입니다.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/12Ahn22/my-bird.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/12Ahn22/my-bird/issues"
+  },
+  "homepage": "https://github.com/12Ahn22/my-bird#readme",
+  "dependencies": {
+    "dotenv": "^10.0.0",
+    "ejs": "^3.1.6",
+    "express": "^4.17.1",
+    "express-session": "^1.17.2",
+    "morgan": "^1.10.0",
+    "mysql2": "^2.2.5",
+    "sequelize": "^6.6.4"
+  }
+}
