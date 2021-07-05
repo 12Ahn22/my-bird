@@ -1,42 +1,52 @@
 const express = require('express');
-
-const morgan = require('morgan');
-const dotenv = require('dotenv');
 const path = require('path');
-const expressLayouts = require('express-ejs-layouts');
+// log
+const morgan = require('morgan');
+// .env
+const dotenv = require('dotenv');
+const exp = require('constants');
+dotenv.config();
+// db 객체 가져오기
+const {sequelize} = require('./models'); // db 객체.sequelize
 
-require('dotenv').config();
 // app 생성
 const app = express();
+
 // app 설정
-app.set('port', process.env.PORT || 8500); // 포트설정
-// ejs를 사용하기 위한 설정
+app.set('port', 5000);
+// ejs 설정
 app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname, 'views')); 
-// ejs 레이아웃 사용하기
-// app.set(expressLayouts);
+app.set('views', path.join(__dirname, 'views'));
 
 // 미들웨어 사용
-// static 폴더 경로 설정 /public으로
-app.use(express.static(path.join(__dirname, 'public')));
-// body-parser
-app.use(express.json()); // json 파일을 파서
-app.use(express.urlencoded({extended:false})); // url을 해석- 내장모듈 사용
-// morgan - 로그
-app.use(morgan('dev'));
+app.use(express.json()); // json 데이터 파서
+app.use(express.urlencoded({ extended: false })); // 내부 url 파서 사용
+app.use(express.static(path.join(__dirname + 'public'))); // 정적 파일 위치 설정
+app.use(morgan('dev')); // 로그 확인 모듈
 
-// 시퀄라이즈 모듈 가져오기
-const sequelize = require('./models/index.js').sequelize; // db안에 있는 시퀄라이저객체
-sequelize.sync().then(()=>{
-  console.log('============데이터베이스 연결 성공=============');
-})
+// 데이터베이스 연결하기
+sequelize.sync({ force:false})
+  .then(()=>{
+    console.log('데이터베이스 연결 완료');
+  })
+  .catch((error)=>{
+    console.error(error);
+  })
 
-// 라우터들
-const pageRouter = require('./routes/page');
+// 임시 / 라우터
+app.get('/', (req, res) => {
+  res.send('Hello Node!');
+});
 
-// 라우터 사용
-app.use('/',pageRouter);
+// 에러 처리 라우터
+app.use((err, req, res, next) => {
+  console.error(err);
+  err.status = 500;
+  err.message = '에러 처리 라우터입니다';
+  res.render('err', { error: err });
+});
 
+// 리슨
 app.listen(app.get('port'), () => {
-  console.log(app.get('port'),'번 포트에서 대기중!');
-})
+  console.log(app.get('port') + '번 포트에서 대기중');
+});

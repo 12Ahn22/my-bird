@@ -27,7 +27,7 @@
     "express-session": "^1.17.2",
     "morgan": "^1.10.0",
     "mysql2": "^2.2.5",
-    "passport": "^0.4.1",
-    "sequelize": "^6.6.4"
+    "sequelize": "^6.6.4",
+    "sequelize-cli": "^6.2.0"
   }
 }

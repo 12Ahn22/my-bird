@@ -1,58 +1,59 @@
+'use strict';
 const Sequelize = require('sequelize');
 const env = process.env.NODE_ENV || 'development';
-
-// db 설정을 가져온다.
+// 시퀄라이저의 설정을 가져오기 - [현재 어플리케이션의 상태]에 따라 다른 설정을 가져온다.
 const config = require('../config/config.json')[env];
 
+// db데이터 제어 객체이다.
+const db = {}; // 데이터베이스(스키마)와 매핑됨
 
-// MySQL 스키마와 매핑된다.
-const db ={};
-// 시퀄라이즈 ORM 객체를 생성한다.
+// config에 있는 설정으로 시퀄라이즈 객체 생성
 const sequelize = new Sequelize(
-  // db명, 계정명, 비밀번호, 설정
-  config.database, config.username, config.password, config
+  config.database,
+  config.username,
+  config.password,
+  config
 );
 
-// db 객체에 시퀄라이즈 객체를 바인딩한다.
-db.sequelize = sequelize;
-// db.Sequelize = Sequelize;
-// db.Config = config;
+//DB객체에 시퀄라이즈 객체를 속성에 바인딩한다.
+db.sequelize = sequelize; // sequelize는 생성자와 config로 생성한 시퀄라이져 객체
+db.Sequelize = Sequelize; // Sequelize는 Sequelize 모듈
+db.Config = config; // 설정도 db 객체에 프로퍼티로 추가
 
+// 만든 모델들 가져오기
+// sequelize.define 함수를 실행한 걸 리턴함. => 모델 객체
+db.User = require('./user.js')(sequelize, Sequelize);
+db.Post = require('./post.js')(sequelize, Sequelize);
+db.Hashtag = require('./hashtag.js')(sequelize, Sequelize);
 
-// 만든 모델 가져오기
-// 모델들은 param을 받는다.
-//  - define 메서드를 쓰기위한 sequelize 객체와
-//  - Sequelize.DataType을 사용하기 위해서 Sequelize 객체를 보내준다.
-db.User = require('./user')(sequelize , Sequelize);
-db.Post = require('./post')(sequelize , Sequelize);
-db.Hashtag = require('./hashtag')(sequelize , Sequelize);
+// 모델들의 관계 설립하기
+// DB들의 관계를 설립하기
 
-// 모델 관계를 정의하기
-// User 모델은 많은 포스트를 가지고 있다. User hasMany Post
+// 유저에 대한 관계 설립하기
+// User는 많은 Post를 가진다.
 db.User.hasMany(db.Post);
-// 유저는 많은 다른 유저에 속해있다 => 둘 다 같은 테이블이다.
-// 같은 테이블 간의 이름 겹침 방지를 위해 through를 사용한다.
-// 누가 어떤 역할의 누구인지 구분하기 위해서 외래키로
-// followingId와 followerId를 사용한다.
-// 같은 테이블간의 as 옵션은 필수이다. as는 외래키와 반대되는 모델을 가리킨다.
-db.User.belongsToMany(db.User,{
-  foreignKey: 'followingId', // 사용될 외래키
-  as:'Followers', //
-  through:'Follow', // 같은 테이블 간의 관계를 나타낼 모델(테이블)이름
+// User는 많은 User에 속해 있다. - 팔로우/팔로워 관계
+// N:M의 관계다.
+db.User.belongsToMany(db.User, {
+  foreignKey: 'followingId', // 외래키 - Follwings에 있는 속성 id
+  as: 'Followers', // 이 User를 구분하기 위한 이름
+  through: 'Follow', // 두 관계를 위한 테이블 - 시퀄라이저가 관계를 파악해 자동 생성한다.
 });
-db.User.belongsToMany(db.User,{
-  foreignKey: 'followerId',
-  as:'Followings',
-  through:'Follow',
+db.User.belongsToMany(db.User, {
+  foreignKey: 'followerId', // 외래키 - Follwers에 있는 속성 id
+  as: 'Followings', // 이 User를 구분하기 위한 이름
+  through: 'Follow', // 두 관계를 위한 테이블
 });
 
-// POST는 USER에 속해있다.
-db.Post.belongsTo(db.User);
-// POST는 여러개의 Hashtag에 속한다.
-db.Post.belongsToMany(db.Hashtag,{ through: 'PostHashtag'});
+// Post의 관계 설정
+db.Post.belongsTo(db.User); // Post는 항상 User에 속해있다. 1:N
+db.Post.belongsToMany(db.Hashtag,{ // N:M 
+  through:'PostHashtag' // 시퀄라이저가 관계를 파악해 자동 생성한다.
+})
+// HashTag
+db.Hashtag.belongsToMany(db.Post,{
+  through:'PostHashtag'
+})
 
-// 해시태그는 많은 Post에 속해있다.
-db.Hashtag.belongsToMany(db.Post,{through: 'PostHashtag'});
-
-// db를 내보낸다.
+// 모듈 내보내기
 module.exports = db;
