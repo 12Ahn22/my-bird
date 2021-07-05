@@ -4,7 +4,8 @@
   "description": "> Node.js교과서 책의 Node-bird를 참고하여 만든 기본 **CRUD** 앱입니다.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon app.js"
   },
   "repository": {
     "type": "git",
@@ -23,6 +24,7 @@
     "express-session": "^1.17.2",
     "morgan": "^1.10.0",
     "mysql2": "^2.2.5",
-    "sequelize": "^6.6.4"
+    "sequelize": "^6.6.4",
+    "sequelize-cli": "^6.2.0"
   }
 }
