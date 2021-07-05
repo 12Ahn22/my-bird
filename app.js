@@ -12,6 +12,9 @@ const app = express();
 
 // app 설정
 app.set('port', 5000);
+// ejs 설정
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
 
 // 미들웨어 사용
 app.use(express.json()); // json 데이터 파서
@@ -22,6 +25,14 @@ app.use(morgan('dev')); // 로그 확인 모듈
 // 임시 / 라우터
 app.get('/', (req, res) => {
   res.send('Hello Node!');
+});
+
+// 에러 처리 라우터
+app.use((err, req, res, next) => {
+  console.error(err);
+  err.status = 500;
+  err.message = '에러 처리 라우터입니다';
+  res.render('err', { error: err });
 });
 
 // 리슨
