@@ -5,7 +5,26 @@ const router = express.Router();
 
 const User = require('../models/index.js').User;
 
+// 매 요청마다 실행되는 미들웨어
+router.use((req,res,next)=>{
+  // locals에 저장해 사용한다.
+  // console.log(`=========req.user====`, req.user);
+  // console.log(`=========res.locals.user====${res.locals.user}=========`);
+  // console.log(`=============session========`,res.session);
+  // console.log('디시얼라이즈는 되는데 왜 저장이 안대?',req.user);
+  res.locals.user = req.user; // 근데 값을 저장을 못해;
+  console.log('res.locals.user========================',res.locals.user); // 할당도 안해놓고 콘솔을 찍으니..안나오지... 
+  res.locals.followerCount = 0;
+  res.locals.followingCount = 0;
+  res.locals.followrIdList = [];
+
+  next();
+});
+
+
 router.get('/',(req,res)=>{
+  console.log('GET 라우터입니다====')
+  // console.log(req.locals.user);
   res.render('main.ejs');
 })
 
@@ -32,12 +51,9 @@ router.post('/join',async (req,res,next)=>{
   }
 });
 
-
-// 로그인 페이지 라우터
-router.get('/login',(req,res)=>{
-  res.render('login');
+// 세션 확인 라우터
+router.get('/session',(req,res)=>{
+  res.json(req.session);
 })
-
-
 
 module.exports = router;
