@@ -7,7 +7,7 @@ const dotenv = require('dotenv');
 const exp = require('constants');
 dotenv.config();
 // db 객체 가져오기
-const {sequelize} = require('./models'); // db 객체.sequelize
+const { sequelize } = require('./models'); // db 객체.sequelize
 // session
 const session = require('express-session');
 // passport
@@ -28,24 +28,27 @@ app.use(express.urlencoded({ extended: false })); // 내부 url 파서 사용
 app.use(express.static(path.join(__dirname + 'public'))); // 정적 파일 위치 설정
 app.use(morgan('dev')); // 로그 확인 모듈
 // passport를 사용하기 위해서 session이 꼭 필요하다
-app.use(session({
-  resave:false,
-  saveUninitialized: false,
-  secret: process.env.COOKIE_SECRET,
-  cookie:{
-    secure: false,
-    httpOnly: true
-  }
-}))
+app.use(
+  session({
+    resave: false,
+    saveUninitialized: false,
+    secret: process.env.COOKIE_SECRET,
+    cookie: {
+      secure: false, // true인 경우 https 에서만 사용가능
+      httpOnly: true,
+    },
+  })
+);
 // 데이터베이스 연결하기
-sequelize.sync({ force:false})
-  .then(()=>{
+sequelize
+  .sync({ force: false })
+  .then(() => {
     console.log('데이터베이스 연결 완료');
   })
-  .catch((error)=>{
+  .catch((error) => {
     console.error(error);
-  })
-  
+  });
+
 // passport 설정
 const passportConfig = require('./passport');
 passportConfig();
@@ -54,16 +57,13 @@ passportConfig();
 app.use(passport.initialize());
 app.use(passport.session());
 
-
 //  라우터 가져오기
 const pageRoute = require('./routes/page');
 const authRoute = require('./routes/auth');
 
 // 라우터 사용하기
-app.use('/',pageRoute);
-app.use('/login',authRoute);
-
-
+app.use('/', pageRoute);
+app.use('/login', authRoute);
 
 // 에러 처리 라우터
 app.use((err, req, res, next) => {

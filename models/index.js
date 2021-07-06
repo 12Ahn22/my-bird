@@ -47,13 +47,14 @@ db.User.belongsToMany(db.User, {
 
 // Post의 관계 설정
 db.Post.belongsTo(db.User); // Post는 항상 User에 속해있다. 1:N
-db.Post.belongsToMany(db.Hashtag,{ // N:M 
-  through:'PostHashtag' // 시퀄라이저가 관계를 파악해 자동 생성한다.
-})
+db.Post.belongsToMany(db.Hashtag, {
+  // N:M
+  through: 'PostHashtag', // 시퀄라이저가 관계를 파악해 자동 생성한다.
+});
 // HashTag
-db.Hashtag.belongsToMany(db.Post,{
-  through:'PostHashtag'
-})
+db.Hashtag.belongsToMany(db.Post, {
+  through: 'PostHashtag',
+});
 
 // 모듈 내보내기
 module.exports = db;
