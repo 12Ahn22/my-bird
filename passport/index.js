@@ -1,6 +1,7 @@
 // 모든 전략들을 관리하는 파일
 const passport = require('passport');
 const local = require('./LocalStrategy'); // 로컬 인증 전략 가져오기
+const kakao = require('./KakaoStrategy'); // 카카오 인증 전략 가져오기
 
 const User = require('../models/index').User;
 
@@ -29,4 +30,5 @@ module.exports = () => {
   });
 
   local();
+  kakao();
 };

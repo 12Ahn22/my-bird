@@ -34,9 +34,13 @@ router.post('/', (req, res, next) => {
 // 로그아웃
 // login/out
 router.get('/out', (req, res) => {
+  // res.locals.user.provider 이게 카카오면.. 카카오 로그인을 하기?
+
   req.logout();
   req.session.destroy();
   res.redirect('/');
 });
+
+// login/kakao/out
 
 module.exports = router;
