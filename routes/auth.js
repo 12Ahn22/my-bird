@@ -73,6 +73,10 @@ router.get('/kakao/logout', async (req,res)=>{
     console.error(error);
     res.json(error);
   }
+  // 세션 정리
+  req.logout();
+  req.session.destroy();
+  
   res.redirect('/');
 }) 
 
