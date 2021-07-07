@@ -1,4 +1,5 @@
 // 로그인 관련 라우터
+const axios = require('axios');
 const express = require('express');
 const router = express.Router();
 const passport = require('passport');
@@ -44,8 +45,9 @@ router.get('/logout', (req, res) => {
 // 카카오 로그인 테스트
 // auth/kakao
 router.get('/kakao', passport.authenticate('kakao'));
+// 카카오에 유저정보 요청 후, 콜백을 받을 라우터
 router.get(
-  '/auth/kakao/callback',
+  '/kakao/callback',
   passport.authenticate('kakao', {
     failureRedirect: '/',
   }),
@@ -53,8 +55,26 @@ router.get(
     res.redirect('/');
   }
 );
+// 카카오 로그아웃
+// auth//kakao/logout
+router.get('/kakao/logout', async (req,res)=>{
+  // https://kapi.kakao/com/v1/user/logout
+  try {
+    const ACCESS_TOKEN = res.locals.user.accessToken;
+    let logout = await axios({
+      method:'post',
+      url:'https://kapi.kakao.com/v1/user/unlink',
+      headers:{
+        // 'content-Type': 'application/x-www-form-urlencoded',
+        'Authorization': `Bearer ${ACCESS_TOKEN}`
+      }
+    });
+  } catch (error) {
+    console.error(error);
+    res.json(error);
+  }
+  res.redirect('/');
+}) 
 
-
-// 카카오 계정 로그아웃 하기
 
 module.exports = router;

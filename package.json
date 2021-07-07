@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/12Ahn22/my-bird#readme",
   "dependencies": {
+    "axios": "^0.21.1",
     "bcrypt": "^5.0.1",
     "dotenv": "^10.0.0",
     "ejs": "^3.1.6",

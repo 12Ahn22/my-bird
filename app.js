@@ -65,6 +65,7 @@ const authRoute = require('./routes/auth');
 app.use('/', pageRoute);
 app.use('/auth', authRoute);
 
+
 // 에러 처리 라우터
 app.use((err, req, res, next) => {
   console.error(err);

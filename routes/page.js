@@ -8,6 +8,7 @@ const User = require('../models/index.js').User;
 // 로그인 확인 여부 미들웨어를 사용해 보기
 const { isLoggedIn, isNotLoggedIn } = require('./middlewares');
 const passport = require('passport');
+const { session } = require('passport');
 
 // 매 요청마다 실행되는 미들웨어
 router.use((req, res, next) => {
@@ -18,7 +19,12 @@ router.use((req, res, next) => {
   // console.log('디시얼라이즈는 되는데 왜 저장이 안대?',req.user);
   res.locals.user = req.user || ''; // 근데 값을 저장을 못해;
   console.log('res.locals.user========================', res.locals.user); // 할당도 안해놓고 콘솔을 찍으니..안나오지...
-  console.log('res.user에 있는 정보값들', res.locals.user.provider);
+  console.log('req.user에 있는 정보값들', req.user);
+  if(req.user){
+    console.log('==========토큰============');
+    console.log(req.user.accessToken);
+    console.log(res.locals.user.accessToken);
+  }
   res.locals.followerCount = 0;
   res.locals.followingCount = 0;
   res.locals.followrIdList = [];
@@ -61,6 +67,8 @@ router.post('/join', async (req, res, next) => {
 // 세션 확인 라우터
 // 로그인 된 경우만 세션 라우터에 접근가능
 router.get('/session', isLoggedIn, (req, res) => {
+  console.log('=========세션 라우터==========');
+  console.log(req.session);
   res.json(req.session);
 });
 

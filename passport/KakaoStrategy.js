@@ -19,6 +19,12 @@ module.exports = () => {
         // profile에 넘길 데이터는 카카오 디벨로퍼에서 설정한다. = 동의 항목
         // 내가 동의를 한 항목의 데이터만 넘긴다.
         // console.log('kakako profile', profile);
+        console.log('===profile에 뭐가있나요?===');
+        console.log(profile);
+        console.log('=====액세스 토큰======',accessToken);
+        // console.log(profile._json.kakao_account.email);
+        // console.log(profile.id);
+        // console.log(profile.displayName);
         try {
           // db에서 이전에 카카오로 로그인을 시도해 db에 저장된 적이 있는지 확인
           const exUser = await User.findOne({
@@ -28,16 +34,15 @@ module.exports = () => {
           });
           // exUser가 있다면 이미 카카오로 로그인을 한 적이 있는 유저
           if (exUser) {
+            const tokenUser = {
+              user:exUser,
+              accessToken : accessToken || '',
+            }
             // verify Callback-authenticate로 감
-            done(null, exUser); // 에러는 없고 user데이터는 보냄
+            done(null, tokenUser); // 에러는 없고 user데이터는 보냄
           } else {
             // 만약 db에 카카오로 로그인한적 없는 신규 유저라면
             // db에 해당 snsId와 저장한다
-
-            console.log('===profile에 뭐가있나요?===');
-            console.log(profile._json.kakao_account.email);
-            console.log(profile.id);
-            console.log(profile.displayName);
 
             // 새 유저 생성하기
             // email과 snsId와 닉네임 저장하기
@@ -48,7 +53,11 @@ module.exports = () => {
               password: '',
               provider: 'kakao',
             });
-            done(null, newUser);
+            const tokenUser = {
+              user:exUser,
+              accessToken : accessToken || '',
+            }
+            done(null, tokenUser);
           }
         } catch (err) {
           console.error(err);
