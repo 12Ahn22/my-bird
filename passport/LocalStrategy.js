@@ -29,7 +29,7 @@ module.exports = () => {
             const result = await bcrypt.compare(password, exUser.password);
             // 비밀번호가 맞을 경우
             if (result) {
-              done(null, exUser); // 콜백 함수에 err는 null이고 구한 유저정보를 넘긴다.
+              done(null, {user:exUser}); // 콜백 함수에 err는 null이고 구한 유저정보를 넘긴다.
             } else {
               done(null, false, { message: '비밀번호가 일치하지 않습니다.' });
             }

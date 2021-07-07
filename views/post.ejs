@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>글작성 페이지</title>
+</head>
+<body>
+  <h1><%=data.nick%>님 환영합니다.</h1>
+  <!-- multipart를 사용해 이미지등을 보낼 수 있다. 
+    enctype 속성을 써줘야 multer 사용 가능
+  -->
+  <form action="/post" method="POST" accept-charset="UTF-8">
+    <div>
+      이미지:
+      <input type="file" name="img" id="img">
+      <!-- 이미지가 저장된 경로가 들어갈 url -->
+      <input type="hidden" name="url" id="img-url">
+      <img src="" alt="preview" id="img-preview" style="width: 200px;">
+    </div>
+
+    콘텐츠:
+    <textarea name="contents" placeholder="내용을 입력하세요" cols="30" rows="10"></textarea>
+    <!-- hidden으로 유저 id를 같이 전송한다. -->
+    <input type="hidden" name="id" value="<%=data.id%>">
+    <button type="submit">글쓰기</button>
+  </form>
+</body>
+</html>
+
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script>
+  // change 이벤트 스크립트
+  // axios를 사용한다.
+  const img = document.getElementById('img');
+  img.addEventListener('change',function(e){
+    // console.log('바뀌고있어요')
+    const formData = new FormData();
+    console.log(this,this.files); // 화살표 함수를 쓰면 this는 전역이됨
+    // formData에 file을 추가
+    formData.append('img',this.files[0]); // 키-값 (img-this.files[0]);
+    // post한다.
+    axios.post('/post/img',formData)
+      .then((res)=>{
+        // 성공하면 보내주는 데이터 res
+        // res.json({url:`/img/${req.file.filename}`});
+        console.log(res.data);
+        document.getElementById('img-url').value = res.data.url;
+        document.getElementById('img-preview').src = res.data.url;
+      })
+      .catch((err)=>{
+        console.error(err);
+      })
+  });
+</script>

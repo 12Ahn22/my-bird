@@ -2,6 +2,8 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
 const router = express.Router();
+const multer = require('multer');
+const path = require('path');
 
 const User = require('../models/index.js').User;
 
@@ -61,6 +63,7 @@ router.post('/join', async (req, res, next) => {
     next(error);
   }
 });
+
 
 
 

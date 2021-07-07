@@ -20,7 +20,7 @@ module.exports = () => {
   // 매 요청마다 발생한다. id는 시리얼라이즈의 user.id다.
   // passport.session 미들웨어가 이 메서드를 실행한다.
   passport.deserializeUser((user, done) => {
-    // id에는 {id : user.User.id, accessToken : user.accessToken}
+    // user = {id : data.user.id, accessToken : data.accessToken}
     console.log('디시리얼라이즈 유저', user);
     User.findOne({ where: { id:user.id } })
       .then((result) => { // db에서 가져온 유저데이터 결과 result

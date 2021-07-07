@@ -25,7 +25,7 @@ app.set('views', path.join(__dirname, 'views'));
 // 미들웨어 사용
 app.use(express.json()); // json 데이터 파서
 app.use(express.urlencoded({ extended: false })); // 내부 url 파서 사용
-app.use(express.static(path.join(__dirname + 'public'))); // 정적 파일 위치 설정
+app.use(express.static(path.join(__dirname + '/public'))); // 정적 파일 위치 설정
 app.use(morgan('dev')); // 로그 확인 모듈
 // passport를 사용하기 위해서 session이 꼭 필요하다
 app.use(
@@ -60,11 +60,11 @@ app.use(passport.session());
 //  라우터 가져오기
 const pageRoute = require('./routes/page');
 const authRoute = require('./routes/auth');
-
+const postRoute = require('./routes/post');
 // 라우터 사용하기
 app.use('/', pageRoute);
 app.use('/auth', authRoute);
-
+app.use('/post',postRoute);
 
 // 에러 처리 라우터
 app.use((err, req, res, next) => {
