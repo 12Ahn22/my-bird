@@ -16,6 +16,16 @@
     <hr>
     <div id="contents">
       <h2>글 목록</h2>
+      <div class="twits">
+        <% for(var i= 0; i < posts.length; i++) { %>
+          <div>
+            <p>
+              <%=posts[i].contents%>
+            </p>
+            <img src="<%=posts[i].img%>" style="width: 150px;" alt="">
+          </div>
+        <% } %>
+      </div>
     </div>
   </body>
 </html>

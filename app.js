@@ -41,7 +41,7 @@ app.use(
 );
 // 데이터베이스 연결하기
 sequelize
-  .sync({ force: false })
+  .sync()
   .then(() => {
     console.log('데이터베이스 연결 완료');
   })

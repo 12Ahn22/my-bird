@@ -60,7 +60,7 @@ module.exports = () => {
             done(null, tokenUser);
           }
         } catch (err) {
-          console.error(err);
+          // console.error(err);
           done(err);
         }
       }

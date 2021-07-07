@@ -6,6 +6,7 @@ const multer = require('multer');
 const path = require('path');
 
 const User = require('../models/index.js').User;
+const Post = require('../models/index.js').Post;
 
 // 로그인 확인 여부 미들웨어를 사용해 보기
 const { isLoggedIn, isNotLoggedIn } = require('./middlewares');
@@ -18,7 +19,7 @@ router.use((req, res, next) => {
   // console.log(`=========req.user====`, req.user);
   // console.log(`=========res.locals.user====${res.locals.user}=========`);
   // console.log(`=============session========`,res.session);
-  // console.log('디시얼라이즈는 되는데 왜 저장이 안대?',req.user);
+  console.log('디시얼라이즈는 되는데 왜 저장이 안대?',req.user);
   res.locals.user = req.user || ''; // 근데 값을 저장을 못해;
   console.log('res.locals.user========================', res.locals.user); // 할당도 안해놓고 콘솔을 찍으니..안나오지...
   console.log('req.user에 있는 정보값들', req.user);
@@ -34,12 +35,40 @@ router.use((req, res, next) => {
   next();
 });
 
-router.get('/', (req, res) => {
-  console.log('GET 라우터입니다====');
-  // console.log(req.locals.user);
-  // const data = res.locals.user;
-  res.render('main.ejs');
-});
+// /에 접근했을 때, db에서 게시글 데이터를 가져오는 라우터
+router.get('/', async (req,res,next)=>{
+  let post;
+  try {
+    // 전부 가져오는 데,
+    posts = await Post.findAll({
+      include:{
+        model:User,
+        attributes:['id','nick'],
+      },
+      order:[['createdAt', 'DESC']], // 가져오는 정렬 순서
+    });
+    // console.log('==============posts================');
+    // console.log(posts);
+    console.log('==============req.user================');
+    console.log(req.user);
+    if(req.user === undefined){
+      console.log('언디파인이면 제발 실행시켜봐');
+      return res.render('main',{posts:''});
+    }
+    return res.render('main',{posts});
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+})
+
+
+// router.get('/', (req, res) => {
+//   console.log('GET 라우터입니다====');
+//   // console.log(req.locals.user);
+//   // const data = res.locals.user;
+//   res.render('main.ejs');
+// });
 
 // 회원가입 페이지 라우터
 router.get('/join', isNotLoggedIn, (req, res) => {
