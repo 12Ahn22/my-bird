@@ -56,17 +56,7 @@ router.post('/join', async (req, res, next) => {
   }
 });
 
-// 카카오 로그인 테스트
-router.get('/kakao', passport.authenticate('kakao'));
-router.get(
-  '/auth/kakao/callback',
-  passport.authenticate('kakao', {
-    failureRedirect: '/',
-  }),
-  (req, res) => {
-    res.redirect('/');
-  }
-);
+
 
 // 세션 확인 라우터
 // 로그인 된 경우만 세션 라우터에 접근가능

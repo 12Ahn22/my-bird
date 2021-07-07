@@ -63,7 +63,7 @@ const authRoute = require('./routes/auth');
 
 // 라우터 사용하기
 app.use('/', pageRoute);
-app.use('/login', authRoute);
+app.use('/auth', authRoute);
 
 // 에러 처리 라우터
 app.use((err, req, res, next) => {
